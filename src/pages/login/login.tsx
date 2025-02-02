@@ -50,7 +50,7 @@ const LoginPage = () => {
       const selfDataPromise = await refetch();
       //logout or redirect to client ui
 
-      if (!isAllowed(selfDataPromise.data.role)) {
+      if (!isAllowed(selfDataPromise.data)) {
         logoutMutate();
         return;
       }

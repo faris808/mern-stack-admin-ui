@@ -19,7 +19,7 @@ const Root = () => {
         if(error instanceof AxiosError && error.response?.status === 401){
             return false;
         }
-
+        
         return failureCount < 3;
     }
   });
