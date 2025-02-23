@@ -3,7 +3,7 @@ type UserFilterProps = {
   children? : React.ReactNode;
   onFilterChange: (filterName: string, filterValue: string) => void;
 };
-const UsersFilter = ({ onFilterChange, children }: UserFilterProps) => {
+const TenantsFilter = ({ onFilterChange, children }: UserFilterProps) => {
   return (
     <Card>
       <Row justify="space-between">
@@ -55,4 +55,4 @@ const UsersFilter = ({ onFilterChange, children }: UserFilterProps) => {
   );
 };
 
-export default UsersFilter;
+export default TenantsFilter;
