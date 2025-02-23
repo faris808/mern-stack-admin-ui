@@ -73,7 +73,7 @@ const Dashboard = () => {
 
   const [collapsed, setCollapsed] = useState(false);
   const {
-    token: { colorBgContainer },
+    token: { colorBgContainer},
   } = theme.useToken();
   const { user } = useAuthStore();
   if (user === null) {

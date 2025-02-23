@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import React from "react";
+import UserForm from "./forms/UserForm";
 
 const columns = [
   {
@@ -64,6 +65,10 @@ const Users = () => {
     },
   });
 
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
+
   const { user } = useAuthStore();
   if (user?.role !== "admin") {
     return <Navigate to="/" replace={true} />;
@@ -82,7 +87,11 @@ const Users = () => {
             console.log(filterName, filterValue);
           }}
         >
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setDrawerOpen(true)}
+          >
             Add User
           </Button>
         </UsersFilter>
@@ -91,6 +100,7 @@ const Users = () => {
         <Drawer
           title="Create user"
           width={720}
+          styles={{ body: { background: colorBgLayout } }}
           destroyOnClose={true}
           open={drawerOpen}
           onClose={() => {
@@ -104,10 +114,9 @@ const Users = () => {
             </Space>
           }
         >
-          <p>some contents...</p>
-          <p>some contents...</p>
-          <p>some contents...</p>
-          <p>some contents...</p>
+          <Form layout="vertical">
+            <UserForm />
+          </Form>
         </Drawer>
       </Space>
     </>
