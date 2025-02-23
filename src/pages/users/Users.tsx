@@ -1,11 +1,12 @@
-import { Breadcrumb, Space, Table } from "antd";
-import { RightOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../http/api";
 import { User } from "../../types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
+import React from "react";
 
 const columns = [
   {
@@ -50,6 +51,7 @@ const columns = [
 ];
 
 const Users = () => {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const {
     data: users,
     isError,
@@ -75,10 +77,38 @@ const Users = () => {
         />
         {isLoading && <div>Loading....</div>}
         {isError && <div>{error.message}</div>}
-        <UsersFilter onFilterChange={(filterName : string, filterValue : string) => {
-          console.log(filterName, filterValue);
-        }}/>
-        <Table columns={columns} dataSource={users} rowKey={'id'}/>
+        <UsersFilter
+          onFilterChange={(filterName: string, filterValue: string) => {
+            console.log(filterName, filterValue);
+          }}
+        >
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setDrawerOpen(true)}>
+            Add User
+          </Button>
+        </UsersFilter>
+        <Table columns={columns} dataSource={users} rowKey={"id"} />
+
+        <Drawer
+          title="Create user"
+          width={720}
+          destroyOnClose={true}
+          open={drawerOpen}
+          onClose={() => {
+            setDrawerOpen(false);
+            console.log("closing");
+          }}
+          extra={
+            <Space>
+              <Button>Cancel</Button>
+              <Button type="primary">Submit</Button>
+            </Space>
+          }
+        >
+          <p>some contents...</p>
+          <p>some contents...</p>
+          <p>some contents...</p>
+          <p>some contents...</p>
+        </Drawer>
       </Space>
     </>
   );
