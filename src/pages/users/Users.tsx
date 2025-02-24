@@ -2,7 +2,6 @@ import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
 import {
-  QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
