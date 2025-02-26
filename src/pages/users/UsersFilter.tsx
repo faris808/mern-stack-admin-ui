@@ -1,38 +1,32 @@
-import { Card, Col, Input, Row, Select } from "antd";
+import { Card, Col, Form, Input, Row, Select } from "antd";
 type UserFilterProps = {
-  children? : React.ReactNode;
-  onFilterChange: (filterName: string, filterValue: string) => void;
+  children?: React.ReactNode;
 };
-const UsersFilter = ({ onFilterChange, children }: UserFilterProps) => {
+const UsersFilter = ({ children }: UserFilterProps) => {
   return (
     <Card>
       <Row justify="space-between">
         <Col span={16}>
           <Row gutter={20}>
             <Col span={8}>
-              <Input.Search
-                placeholder="Search"
-                onChange={(e) =>
-                  onFilterChange("searchFilter", e.target.value)
-                }
-                allowClear={true}
-              />
+              <Form.Item name="q">
+                <Input.Search placeholder="Search" allowClear={true} />
+              </Form.Item>
             </Col>
             <Col span={8}>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Select role"
-                onChange={(selectedItem) =>
-                  onFilterChange("roleFilter", selectedItem)
-                }
-                allowClear={true}
-              >
-                <Select.Option value="admin">Admin</Select.Option>
-                <Select.Option value="manager">Manager</Select.Option>
-                <Select.Option value="customer">Customer</Select.Option>
-              </Select>
+              <Form.Item>
+                <Select
+                  style={{ width: "100%" }}
+                  placeholder="Select role"
+                  allowClear={true}
+                >
+                  <Select.Option value="admin">Admin</Select.Option>
+                  <Select.Option value="manager">Manager</Select.Option>
+                  <Select.Option value="customer">Customer</Select.Option>
+                </Select>
+              </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Select
                 style={{ width: "100%" }}
                 placeholder="Status"
@@ -44,7 +38,7 @@ const UsersFilter = ({ onFilterChange, children }: UserFilterProps) => {
                 <Select.Option value="ban">Ban</Select.Option>
                 <Select.Option value="active">Active</Select.Option>
               </Select>
-            </Col>
+            </Col> */}
           </Row>
         </Col>
         <Col span={8} style={{ display: "flex", justifyContent: "end" }}>
