@@ -60,6 +60,18 @@ const columns = [
     key: "role",
   },
   {
+    title: "Restaurant",
+    dataIndex: "tenant",
+    key: "tenant",
+    render: (_text: string, record: User) => {
+      return (
+        <div>
+          {record.tenant?.name}
+        </div>
+      );
+    },
+  },
+  {
     title: "Action",
     dataIndex: "action",
     key: "action",
