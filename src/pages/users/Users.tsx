@@ -29,6 +29,7 @@ import UsersFilter from "./UsersFilter";
 import React from "react";
 import UserForm from "./forms/UserForm";
 import { PER_PAGE } from "../../constants/constants";
+import { debounce } from "lodash";
 
 const columns = [
   {
@@ -90,7 +91,9 @@ const Users = () => {
   } = useQuery({
     queryKey: ["users", queryParam],
     queryFn: () => {
-      const filteredParams = Object.fromEntries(Object.entries(queryParam).filter((item) => !!item[1]));
+      const filteredParams = Object.fromEntries(
+        Object.entries(queryParam).filter((item) => !!item[1])
+      );
       const queryString = new URLSearchParams(
         filteredParams as unknown as Record<string, string>
       ).toString();
@@ -122,6 +125,12 @@ const Users = () => {
     setDrawerOpen(false);
   };
 
+  const debouncedQUpdate = React.useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setQueryParam((prev) => ({...prev, q: value})); 
+    }, 1000)
+  },[]);
+
   const onFilterChange = (changedFields: FieldData[]) => {
     const changedFilterFields = changedFields
       .map((item) => ({
@@ -129,7 +138,11 @@ const Users = () => {
       }))
       .reduce((acc, item) => ({ ...acc, ...item }), {});
 
-      setQueryParam((prev) => ({...prev, ...changedFilterFields}))
+    if ("q" in changedFilterFields) {
+      debouncedQUpdate(changedFilterFields.q);
+    } else {
+      setQueryParam((prev) => ({ ...prev, ...changedFilterFields }));
+    }
   };
   if (user?.role !== "admin") {
     return <Navigate to="/" replace={true} />;
