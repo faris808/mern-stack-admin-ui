@@ -139,7 +139,7 @@ const Users = () => {
 
   const debouncedQUpdate = React.useMemo(() => {
     return debounce((value: string | undefined) => {
-      setQueryParam((prev) => ({...prev, q: value})); 
+      setQueryParam((prev) => ({...prev, q: value, currentPage: 1})); 
     }, 500)
   },[]);
 
@@ -153,7 +153,7 @@ const Users = () => {
     if ("q" in changedFilterFields) {
       debouncedQUpdate(changedFilterFields.q);
     } else {
-      setQueryParam((prev) => ({ ...prev, ...changedFilterFields }));
+      setQueryParam((prev) => ({ ...prev, ...changedFilterFields, currentPage: 1 }));
     }
   };
   if (user?.role !== "admin") {
