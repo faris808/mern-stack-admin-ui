@@ -104,7 +104,7 @@ const Tenants = () => {
 
     const debouncedQUpdate = React.useMemo(() => {
       return debounce((value: string | undefined) => {
-        setQueryParam((prev) => ({...prev, q: value})); 
+        setQueryParam((prev) => ({...prev, q: value, currentPage: 1})); 
       }, 500)
     },[]);
   
