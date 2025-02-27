@@ -14,7 +14,7 @@ const UsersFilter = ({ children }: UserFilterProps) => {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item>
+              <Form.Item name="role">
                 <Select
                   style={{ width: "100%" }}
                   placeholder="Select role"
