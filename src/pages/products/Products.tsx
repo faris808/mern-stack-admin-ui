@@ -28,7 +28,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { createProduct, getProducts } from "../../http/api";
+import { createProduct, getProducts, updateProduct } from "../../http/api";
 import { format } from "date-fns";
 import { debounce } from "lodash";
 import { useAuthStore } from "../../store";
@@ -107,18 +107,18 @@ const Products = () => {
           [stringifiedKey]: value.availableOptions,
         };
       }, {});
-      const attributes = selectedProduct.attributes.reduce((acc, item)=>{
+      const attributes = selectedProduct.attributes.reduce((acc, item) => {
         return {
-            ...acc,
-            [item.name] : item.value,
-        }
-      },{})
+          ...acc,
+          [item.name]: item.value,
+        };
+      }, {});
       form.setFieldsValue({
         ...selectedProduct,
         priceConfiguration,
         attributes,
-        categoryId : selectedProduct.category._id,
-      })
+        categoryId: selectedProduct.category._id,
+      });
     }
   }, [selectedProduct, form]);
   const [filterForm] = Form.useForm();
@@ -155,8 +155,13 @@ const Products = () => {
 
   const { mutate: productMutate, isPending: isCreateLoading } = useMutation({
     mutationKey: ["product"],
-    mutationFn: async (data: FormData) =>
-      createProduct(data).then((res) => res.data),
+    mutationFn: async (data: FormData) => {
+      if (selectedProduct) {
+        return updateProduct(data, selectedProduct._id).then((res) => res.data);
+      } else {
+        return createProduct(data).then((res) => res.data);
+      }
+    },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["product"] });
       form.resetFields();
@@ -181,7 +186,7 @@ const Products = () => {
       },
       {}
     );
-    const categoryId = JSON.parse(form.getFieldValue("categoryId"))._id;
+    const categoryId = form.getFieldValue("categoryId");
     const attributes = Object.entries(form.getFieldValue("attributes")).map(
       ([key, value]) => {
         return {
@@ -302,12 +307,13 @@ const Products = () => {
         />
 
         <Drawer
-          title={`Add product`}
+          title={selectedProduct ? 'Update product' : 'Add product'}
           width={720}
           styles={{ body: { background: colorBgLayout } }}
           destroyOnClose={true}
           open={drawerOpen}
           onClose={() => {
+            setCurrentProduct(null);
             form.resetFields();
             setDrawerOpen(false);
           }}
@@ -315,6 +321,7 @@ const Products = () => {
             <Space>
               <Button
                 onClick={() => {
+                  setCurrentProduct(null);
                   form.resetFields();
                   setDrawerOpen(false);
                 }}
@@ -332,7 +339,7 @@ const Products = () => {
           }
         >
           <Form layout="vertical" form={form}>
-            <ProductForm form={form}/>
+            <ProductForm form={form} />
           </Form>
         </Drawer>
       </Space>
