@@ -2,6 +2,7 @@ import {
   Card,
   Col,
   Form,
+  FormInstance,
   Input,
   Row,
   Select,
@@ -17,7 +18,7 @@ import Attributes from "./Attributes";
 import ProductImage from "./ProductImage";
 import { useAuthStore } from "../../../store";
 
-const ProductForm = () => {
+const ProductForm = ({form} : {form: FormInstance}) => {
     const {user} = useAuthStore();
   const selectedCategory = Form.useWatch("categoryId");
   const { data: categories } = useQuery({
@@ -106,7 +107,7 @@ const ProductForm = () => {
           <Card title="Product image" bordered={false}>
             <Row gutter={20}>
               <Col span={12}>
-                <ProductImage />
+                <ProductImage initialImage={form.getFieldValue("image")}/>
               </Col>
             </Row>
           </Card>

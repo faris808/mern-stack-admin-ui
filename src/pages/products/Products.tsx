@@ -120,7 +120,7 @@ const Products = () => {
         categoryId : selectedProduct.category._id,
       })
     }
-  }, [selectedProduct]);
+  }, [selectedProduct, form]);
   const [filterForm] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [queryParam, setQueryParam] = React.useState({
@@ -332,7 +332,7 @@ const Products = () => {
           }
         >
           <Form layout="vertical" form={form}>
-            <ProductForm />
+            <ProductForm form={form}/>
           </Form>
         </Drawer>
       </Space>
