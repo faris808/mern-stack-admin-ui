@@ -21,8 +21,13 @@ import { Link } from "react-router-dom";
 import ProductsFilter from "./ProductsFilter";
 import { FieldData, Product } from "../../types";
 import { PER_PAGE } from "../../constants/constants";
-import React from "react";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createProduct, getProducts } from "../../http/api";
 import { format } from "date-fns";
 import { debounce } from "lodash";
@@ -85,6 +90,37 @@ const Products = () => {
   const [form] = Form.useForm();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
+  const [selectedProduct, setCurrentProduct] = useState<Product | null>(null);
+  useEffect(() => {
+    if (selectedProduct) {
+      setDrawerOpen(true);
+      const priceConfiguration = Object.entries(
+        selectedProduct.priceConfiguration
+      ).reduce((acc, [key, value]) => {
+        const stringifiedKey = JSON.stringify({
+          configurationKey: key,
+          priceType: value.priceType,
+        });
+
+        return {
+          ...acc,
+          [stringifiedKey]: value.availableOptions,
+        };
+      }, {});
+      const attributes = selectedProduct.attributes.reduce((acc, item)=>{
+        return {
+            ...acc,
+            [item.name] : item.value,
+        }
+      },{})
+      form.setFieldsValue({
+        ...selectedProduct,
+        priceConfiguration,
+        attributes,
+        categoryId : selectedProduct.category._id,
+      })
+    }
+  }, [selectedProduct]);
   const [filterForm] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [queryParam, setQueryParam] = React.useState({
@@ -156,9 +192,12 @@ const Products = () => {
     );
     const postData = {
       ...form.getFieldsValue(),
-      tenantId : user!.role === "manager" ? user?.tenant?.id : form.getFieldValue('tenantId'),
-      isPublish : form.getFieldValue('isPublish') ? true : false,
-      image: form.getFieldValue('image'),
+      tenantId:
+        user!.role === "manager"
+          ? user?.tenant?.id
+          : form.getFieldValue("tenantId"),
+      isPublish: form.getFieldValue("isPublish") ? true : false,
+      image: form.getFieldValue("image"),
       categoryId,
       priceConfiguration: pricing,
       attributes,
@@ -226,10 +265,15 @@ const Products = () => {
             ...columns,
             {
               title: "Actions",
-              render: () => {
+              render: (_, record: Product) => {
                 return (
                   <Space>
-                    <Button type="link" onClick={() => {}}>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        setCurrentProduct(record);
+                      }}
+                    >
                       Edit
                     </Button>
                   </Space>
@@ -277,7 +321,11 @@ const Products = () => {
               >
                 Cancel
               </Button>
-              <Button type="primary" onClick={onHandleSubmit} loading={isCreateLoading}>
+              <Button
+                type="primary"
+                onClick={onHandleSubmit}
+                loading={isCreateLoading}
+              >
                 Submit
               </Button>
             </Space>

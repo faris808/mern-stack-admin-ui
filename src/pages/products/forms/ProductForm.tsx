@@ -72,7 +72,7 @@ const ProductForm = () => {
                   >
                     {categories?.data.map((category: Category) => (
                       <Select.Option
-                        value={JSON.stringify(category)}
+                        value={category._id}
                         key={category._id}
                       >
                         {category.name}
@@ -133,7 +133,7 @@ const ProductForm = () => {
                       allowClear={true}
                     >
                       {restaurants?.data.data.map((tenant: Tenant) => (
-                        <Select.Option value={tenant.id} key={tenant.id}>
+                        <Select.Option value={String(tenant.id)} key={tenant.id}>
                           {tenant.name}
                         </Select.Option>
                       ))}
